@@ -1,8 +1,7 @@
 import { Menu } from "antd";
-import React from "react";
 import { AppstoreOutlined } from "@ant-design/icons";
 import { Link } from "react-router";
-function Sidebar({ collapsed }) {
+function Sidebar({ collapsed }:any) {
   return (
     <Menu
       defaultOpenKeys={["sub1"]}
