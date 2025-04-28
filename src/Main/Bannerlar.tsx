@@ -1,115 +1,202 @@
-import { useEffect, useState } from "react";
+import { Button, Table } from "antd";
 import api from "./Axios";
-import useMyStor from "./Store/Mystore";
-import AddBanner from "./AddBanner";
-import EditBanner from "./EditBanner";
-import { Button, Switch, Table } from "antd";
+import { useState, useEffect } from "react";
+import AddBuyurtma from "./AddBuyurtma";
+import EditBuyurtma from "./EditBuyrtma";
 
-interface BannerItem {
+type Product = {
   id: number;
-  title: string;
-  isActive: boolean;
-  createdAt: string;
-  imageUrl: string;
-}
+  name: string;
+};
 
-function Banner() {
-  const [banner, setBanner] = useState<BannerItem[]>([]);
+type User = {
+  id: number;
+  name: string;
+};
+
+type OrderItem = {
+  productId: number;
+  quantity: number;
+  price: number;
+};
+
+type Order = {
+  id: number;
+  customerId: number;
+  status: string;
+  totalPrice: number;
+  items: OrderItem[];
+};
+
+function Buyurtma() {
+  const [buyurtmaState, setBuyurtmaState] = useState<Order[]>([]);
+  const [userState, setUserState] = useState<User[]>([]);
+  const [productState, setProductState] = useState<Product[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [editBanner, seteditBanner] = useState<any>();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const accessToken = useMyStor((state) => state.accessToken);
+  const [page, setPage] = useState<number>(1);
+  const [limit] = useState<number>(5);
+  const [totalItems, setTotalItems] = useState<number>(0);
 
-  const fetchBanner = () => {
+  const fetchOrders = (currentPage: number = page) => {
     api
-      .get("/api/banners?limit=10&page=1&order=ASC")
+      .get(`/api/orders?order=ASC&limit=${limit}&page=${currentPage}`)
       .then((res) => {
-        setBanner(res.data.items);
+        setBuyurtmaState(res.data.items);
+        setTotalItems(res.data.total);
       })
-      .catch((e) => {
-        console.error("Xatolik", e);
+      .catch((error) => {
+        console.error("Error fetching orders:", error);
       });
   };
 
   useEffect(() => {
-    fetchBanner();
-  }, [accessToken]);
+    fetchOrders(page);
 
-  const Delet = (id: number): void => {
-    api.delete(`/api/banner/${id}`).then((res) => {
-      console.log(res.data);
-      setBanner((prev) => prev.filter((item) => item.id !== id));
+    api.get("/api/users").then((res) => {
+      setUserState(res.data.items);
     });
+
+    api.get("/api/products").then((res) => {
+      setProductState(res.data.items);
+    });
+  }, [page]);
+
+  function Delet(id: number) {
+    api.delete(`/api/orders/${id}`).then(() => {
+      setBuyurtmaState((item) => item.filter((item) => item.id !== id));
+      setTotalItems((prev) => prev - 1);
+    });
+  }
+
+  const changePage = (newPage: number) => {
+    setPage(newPage);
   };
 
+  const pages = Math.ceil(totalItems / limit);
+
   return (
-    <div className="w-[1300px]">
-      <AddBanner setOpen={setOpen} open={open} onRefresh={fetchBanner} />
-      <EditBanner
-        seteditBanner={seteditBanner}
-        editBanner={editBanner}
-      />
-      <Table<BannerItem>
-        bordered
-        style={{ width: "100%" }}
-        rowKey="id"
+    <div className="bg-gray-50 w-[1300px]">
+      <AddBuyurtma open={open} setOpen={setOpen} onRefresh={() => fetchOrders()} />
+      <EditBuyurtma buyurtmaState={selectedOrder} setBuyurtmaState={setBuyurtmaState} />
+
+      <Table
+        style={{
+          overflow: "auto",
+          height: 560,
+          width: "1400px",
+        }}
+        size="large"
         columns={[
           {
-            title: "id",
+            key: "id",
             dataIndex: "id",
+            title: "Buyurtma raqami",
           },
           {
-            title: "title",
-            dataIndex: "title",
-          },
-          {
-            title: "isActive",
-            dataIndex: "isActive",
-            render: (isActive: boolean) => {
-              return <Switch checked={isActive} />;
+            key: "customerId",
+            dataIndex: "customerId",
+            title: "Mijoz",
+            render: (customerId) => {
+              const new_customer = userState.find((item) => item.id === customerId);
+              return new_customer?.name;
             },
           },
           {
-            title: "createdAt",
-            dataIndex: "createdAt",
+            key: "status",
+            dataIndex: "status",
+            title: "Status",
+            render: (status) => <p>{status}</p>,
           },
           {
-            title: "Rasm",
-            dataIndex: "imageUrl",
-            render: (imageUrl: string) => {
-              return <img className="h-8 w-10" src={imageUrl} alt="user" />;
-            },
+            key: "totalPrice",
+            dataIndex: "totalPrice",
+            title: "Jami",
+            render: (totalPrice) => <p>{totalPrice.toLocaleString("ru")} so'm</p>,
+          },
+          {
+            key: "items",
+            dataIndex: "items",
+            title: "Mahsulot",
+            render: (items) => (
+              <div>
+                {items?.map((item: any) => {
+                  const nomi = productState.find((productItem) => productItem.id === item.productId);
+                  return <div key={item.productId}>{nomi?.name}</div>;
+                })}
+              </div>
+            ),
           },
           {
             title: "Delet & Edit",
             dataIndex: "",
-            render: (record) => {
-              return (
-                <div className="flex gap-2">
-                  <Button
-                    type="primary"
-                    style={{ background: "red" }}
-                    onClick={() => Delet(record.id)}
-                  >
-                    Delet
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      seteditBanner(record);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                </div>
-              );
-            },
+            render: (_, record) => (
+              <div className="flex gap-2">
+                <Button
+                  type="primary"
+                  style={{ background: "red" }}
+                  onClick={() => Delet(record.id)}
+                >
+                  Delet
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setSelectedOrder(record);
+                  }}
+                >
+                  Edit
+                </Button>
+              </div>
+            ),
           },
         ]}
-        dataSource={banner}
+        dataSource={buyurtmaState}
+        rowKey="id"
+        pagination={false} 
       />
+
+      <div className="flex justify-center mt-10">
+        <div className="pagination flex gap-2 items-center">
+          {page > 1 && (
+            <Button
+              type="primary"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={() => changePage(page - 1)}
+            >
+              Back
+            </Button>
+          )}
+
+          {[...Array(pages)].map((_, i) => (
+            <Button
+              key={i}
+              type="primary"
+              className={`px-4 py-2 rounded border ${
+                page === i + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-blue-500 border-blue-500 hover:bg-blue-100"
+              }`}
+              onClick={() => changePage(i + 1)}
+            >
+              {i + 1}
+            </Button>
+          ))}
+
+          {page < pages && (
+            <Button
+              type="primary"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={() => changePage(page + 1)}
+            >
+              Next
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-export default Banner;
+export default Buyurtma;

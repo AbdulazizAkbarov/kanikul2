@@ -1,4 +1,4 @@
-import { Button, Drawer, Form, Input, message, Select } from "antd";
+import { Button, Drawer, Form, Input, message, Select, Upload } from "antd";
 import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
 import { useEffect, useState } from "react";
@@ -8,14 +8,14 @@ interface Category {
   name: string;
 }
 
-interface ProductFormValues {
-  name: string;
-  description: string;
-  price: string;  
-  stock: string;  
-  categoryId: number;
-  imageUrl: string;
-}
+// interface ProductFormValues {
+//   name: string;
+//   description: string;
+//   price: string;
+//   stock: string;
+//   categoryId: number;
+//   imageUrl: string;
+// }
 
 interface AddMahsulotlarPageProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,10 +23,13 @@ interface AddMahsulotlarPageProps {
   onRefresh?: () => void;
 }
 
-function AddMahsulotlarPage({ setOpen, open, onRefresh }: AddMahsulotlarPageProps) {
+function AddMahsulotlarPage({
+  setOpen,
+  open,
+  onRefresh,
+}: AddMahsulotlarPageProps) {
   const [form] = useForm();
   const [catName, setCatName] = useState<Category[]>([]);
-
   useEffect(() => {
     api.get("/api/categories").then((res) => {
       setCatName(res.data.items);
@@ -47,14 +50,16 @@ function AddMahsulotlarPage({ setOpen, open, onRefresh }: AddMahsulotlarPageProp
         <Form
           form={form}
           layout="vertical"
-          onFinish={(values: ProductFormValues) => {
+          onFinish={(values) => {
+            console.log(values);
+            
             api
               .post("/api/products", {
                 name: values.name,
                 categoryId: values.categoryId,
                 description: values.description,
                 price: Number(values.price),
-                imageUrl: values.imageUrl,
+                imageUrl: values.imageUrl.file.response.url,
                 stock: Number(values.stock),
               })
               .then(() => {
@@ -97,7 +102,10 @@ function AddMahsulotlarPage({ setOpen, open, onRefresh }: AddMahsulotlarPageProp
           </Form.Item>
 
           <Form.Item label="Rasm URL" name="imageUrl">
-            <Input placeholder="Rasm URL kiriting" />
+            <Upload name="file"
+            action={"https://nt.softly.uz/api/files/upload"}>
+              <Button>Click to Upload</Button>
+            </Upload>
           </Form.Item>
 
           <Form.Item>

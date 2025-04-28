@@ -4,29 +4,29 @@ import { useState, useEffect } from "react";
 import AddBuyurtma from "./AddBuyurtma";
 import EditBuyurtma from "./EditBuyrtma";
 
-type Product= {
+type Product = {
   id: number;
   name: string;
-}
+};
 
-type User= {
+type User = {
   id: number;
   name: string;
-}
+};
 
-type OrderItem= {
+type OrderItem = {
   productId: number;
   quantity: number;
   price: number;
-}
+};
 
-type Order= {
+type Order = {
   id: number;
   customerId: number;
   status: string;
   totalPrice: number;
   items: OrderItem[];
-}
+};
 
 function Buyurtma() {
   const [buyurtmaState, setBuyurtmaState] = useState<Order[]>([]);
@@ -35,11 +35,16 @@ function Buyurtma() {
   const [open, setOpen] = useState<boolean>(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const orders = () => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
+
+  const orders = (page = 1, limit = 10) => {
     api
-      .get("/api/orders?order=ASC")
+      .get(`/api/orders?order=ASC&page=${page}&limit=${limit}`)
       .then((res) => {
         setBuyurtmaState(res.data.items);
+        setTotal(res.data.meta.totalItems);
       })
       .catch((error) => {
         console.error("Error fetching orders:", error);
@@ -47,7 +52,7 @@ function Buyurtma() {
   };
 
   useEffect(() => {
-    orders();
+    orders(currentPage, pageSize);
 
     api.get("/api/users").then((res) => {
       setUserState(res.data.items);
@@ -56,19 +61,20 @@ function Buyurtma() {
     api.get("/api/products").then((res) => {
       setProductState(res.data.items);
     });
-  }, []);
+  }, [currentPage, pageSize]);
 
-  function Delet(id:number) {
+  function Delet(id: number) {
     api
       .delete(`/api/orders/${id}`)
-      .then(() =>
-        setBuyurtmaState((item) => item.filter((item) => item.id !== id))
-      );
+      .then(() => {
+        setBuyurtmaState((item) => item.filter((item) => item.id !== id));
+        orders(currentPage, pageSize); 
+      });
   }
 
   return (
-    <div className=" bg-gray-50 w-[1300px]">
-      <AddBuyurtma open={open} setOpen={setOpen} onRefresh={orders} />
+    <div className="bg-gray-50 w-[1300px]">
+      <AddBuyurtma open={open} setOpen={setOpen} onRefresh={() => orders(currentPage, pageSize)} />
 
       <EditBuyurtma
         buyurtmaState={selectedOrder}
@@ -102,7 +108,7 @@ function Buyurtma() {
           {
             key: "status",
             dataIndex: "status",
-            title: "status",
+            title: "Status",
             render: (status) => <p>{status}</p>,
           },
           {
@@ -120,7 +126,7 @@ function Buyurtma() {
             render: (items) => {
               return (
                 <div>
-                  {items?.map((item:any) => {
+                  {items?.map((item: any) => {
                     const nomi = productState.find((productItem) => {
                       return productItem.id === item.productId;
                     });
@@ -130,13 +136,12 @@ function Buyurtma() {
               );
             },
           },
-
           {
             title: "Delet & Edit",
             dataIndex: "",
             render: (_, record) => {
               return (
-                <div className=" flex gap-2">
+                <div className="flex gap-2">
                   <Button
                     type="primary"
                     style={{ background: "red" }}
@@ -159,6 +164,17 @@ function Buyurtma() {
         ]}
         dataSource={buyurtmaState}
         rowKey="id"
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: total,
+          onChange: (page, pageSize) => {
+            setCurrentPage(page);
+            setPageSize(pageSize);
+          },
+          showSizeChanger: true,
+          pageSizeOptions: ["5", "10", "20", "50"],
+        }}
       />
     </div>
   );

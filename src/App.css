@@ -1,0 +1,13 @@
+.pagination button {
+    margin: 0 5px;
+  }
+  
+  .pagination .active {
+    background-color: #1890ff;
+    color: white;
+  }
+  
+  .pagination button:disabled {
+    background-color: lightgray;
+  }
+  

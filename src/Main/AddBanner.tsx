@@ -1,4 +1,4 @@
-import { Button, Drawer, Form, Input, message, Switch } from "antd";
+import { Button, Drawer, Form, Input, message, Switch, Upload } from "antd";
 import api from "./Axios";
 import { useForm } from "antd/es/form/Form";
 
@@ -18,11 +18,11 @@ interface AddBannerProps {
 function AddBanner({ setOpen, open, onRefresh }: AddBannerProps) {
   const [form] = useForm<FormValues>();
 
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = (values:any) => {
     api
       .post("/api/banners", {
         title: values.title,
-        imageUrl: values.imageUrl,
+        imageUrl: values.imageUrl.file.response.url,
         isActive: values.isActive,
         createdAt: values.createdAt,
       })
@@ -63,7 +63,10 @@ function AddBanner({ setOpen, open, onRefresh }: AddBannerProps) {
           </Form.Item>
 
           <Form.Item label="Rasm URL" name="imageUrl">
-            <Input placeholder="Rasm URL kiriting" />
+            <Upload name="file"
+            action={"https://nt.softly.uz/api/files/upload"}>
+              <Button>Click to Upload</Button>
+            </Upload>
           </Form.Item>
 
           <Form.Item>

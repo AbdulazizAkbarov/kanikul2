@@ -1,4 +1,4 @@
-import { Button, Drawer, Form, Input, message, Radio } from "antd";
+import { Button, Drawer, Form, Input, message, Radio, Upload } from "antd";
 import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
 
@@ -85,12 +85,11 @@ function AddMijozlar({ setOpen, open, onRefresh }: AddMijozlarProps) {
             />
           </Form.Item>
 
-          <Form.Item
-            label="Rasm URL"
-            name="image"
-            rules={[{ required: true, message: "Rasm URL kiriting" }]}
-          >
-            <Input placeholder="Rasm URL kiriting" />
+          <Form.Item label="Rasm URL" name="image">
+            <Upload name="file"
+            action={"https://nt.softly.uz/api/files/upload"}>
+              <Button>Click to Upload</Button>
+            </Upload>
           </Form.Item>
 
           <Form.Item>
