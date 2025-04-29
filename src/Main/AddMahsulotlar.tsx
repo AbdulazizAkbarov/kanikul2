@@ -8,14 +8,7 @@ interface Category {
   name: string;
 }
 
-// interface ProductFormValues {
-//   name: string;
-//   description: string;
-//   price: string;
-//   stock: string;
-//   categoryId: number;
-//   imageUrl: string;
-// }
+
 
 interface AddMahsulotlarPageProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
