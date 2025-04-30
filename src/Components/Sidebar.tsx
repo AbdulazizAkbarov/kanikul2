@@ -1,51 +1,57 @@
 import { Menu } from "antd";
-import { AppstoreOutlined } from "@ant-design/icons";
+import {
+
+  HomeFilled,
+  OrderedListOutlined,
+  ProductFilled,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import { Link } from "react-router";
-function Sidebar({ collapsed }:any) {
+import { ListOrdered,  } from "lucide-react";
+
+function Sidebar({ collapsed }: { collapsed: boolean }) {
   return (
-    <Menu
-      defaultOpenKeys={["sub1"]}
-      inlineCollapsed={collapsed}
-      mode="inline"
-      className="bg-[]"
-      style={{
-        maxWidth: "200px",
-        height: "full",
-        background: "#324861",
-      }}
-      items={[
-        {
-          icon: <AppstoreOutlined />,
-          key: 1,
-          label: <Link to={"/"}>Home Page</Link>,
-        },
-        {
-          icon: <AppstoreOutlined />,
-          key: 2,
-          label: <Link to={"mahsulotlar"}>Mahsulotlar</Link>,
-        },
-        {
-          icon: <AppstoreOutlined />,
-          key: 3,
-          label: <Link to={"kategoria"}>Kategorialar</Link>,
-        },
-        {
-          icon: <AppstoreOutlined />,
-          key: 4,
-          label: <Link to={"mijozlar"}>Mijozlar</Link>,
-        },
-        {
-          icon: <AppstoreOutlined />,
-          key: 5,
-          label: <Link to={"bannerlar"}>Bannerlar</Link>,
-        },
-        {
-          icon: <AppstoreOutlined />,
-          key: 6,
-          label: <Link to={"buyurtmalar"}>Buyurtmalar</Link>,
-        },
-      ]}
-    />
+    <div style={{ width: 200, height: "100vh", background: "#001529" }}>
+      <Menu
+        mode="inline"
+        theme="dark"
+        inlineCollapsed={collapsed}
+        defaultOpenKeys={["sub1"]}
+        style={{ backgroundColor: "#001529", color: "white" }}
+        items={[
+          {
+            key: "1",
+            icon: <HomeFilled />,
+            label: <Link to="/" style={{ color: "white" }}>Home Page</Link>,
+          },
+          {
+            key: "2",
+            icon: <ProductFilled />,
+            label: <Link to="/mahsulotlar" style={{ color: "white" }}>Mahsulotlar</Link>,
+          },
+          {
+            key: "3",
+            icon: <ProductFilled />,
+            label: <Link to="/kategoria" style={{ color: "white" }}>Kategorialar</Link>,
+          },
+          {
+            key: "4",
+            icon: <UserAddOutlined />,
+            label: <Link to="/mijozlar" style={{ color: "white" }}>Mijozlar</Link>,
+          },
+          {
+            key: "5",
+            icon: <OrderedListOutlined />,
+            label: <Link to="/bannerlar" style={{ color: "white" }}>Bannerlar</Link>,
+          },
+          {
+            key: "6",
+            icon: <ListOrdered />,
+            label: <Link to="/buyurtmalar" style={{ color: "white" }}>Buyurtmalar</Link>,
+          },
+        ]}
+      />
+    </div>
   );
 }
 

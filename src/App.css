@@ -10,4 +10,8 @@
   .pagination button:disabled {
     background-color: lightgray;
   }
+
   
+  .white {
+    color: white;
+  }
