@@ -1,18 +1,11 @@
-import { Button, Drawer, Form, Input, InputNumber, message } from "antd";
+import { Button, Drawer, Form, Input, InputNumber, message, Upload } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React from "react";
 import api from "./Axios";
+import { Product } from "./Type/Type";
 
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: string; 
-  stock: string; 
-  imageUrl: string;
-}
 
-interface EditMahsulotProps {
+type EditMahsulotProps ={
   setEditMahsulot: React.Dispatch<React.SetStateAction<Product | undefined>>;
   editMahsulot: Product | undefined;
 }
@@ -20,14 +13,14 @@ interface EditMahsulotProps {
 const EditMahsulot: React.FC<EditMahsulotProps> = ({ setEditMahsulot, editMahsulot }:any) => {
   const [form] = useForm();
 
-  const handleSubmit = (values: Product) => {
+  const handleSubmit = ({values}:any) => {
     api
       .patch(`/api/products/${editMahsulot?.id}`, {
         name: values.name,
         description: values.description,
         price: values.price,
         stock: values.stock,
-        imageUrl: values.imageUrl,
+        imageUrl: values.imageUrl.file.response.url,
       })
       .then(() => {
         message.success("Mahsulot tahrirlandi!");
@@ -71,7 +64,10 @@ const EditMahsulot: React.FC<EditMahsulotProps> = ({ setEditMahsulot, editMahsul
           </Form.Item>
 
           <Form.Item label="Rasm URL" name="imageUrl">
-            <Input placeholder="Rasm URL kiriting" />
+          <Upload name="file"
+            action={"https://nt.softly.uz/api/files/upload"}>
+              <Button>Click to Upload</Button>
+            </Upload>
           </Form.Item>
 
           <Form.Item>

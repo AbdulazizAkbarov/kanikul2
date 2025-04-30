@@ -5,7 +5,7 @@ import api from "./Axios";
 import EditMahsulot from "./EditMahsulot";
 import { useState, useEffect } from "react";
 
-interface Product {
+type Product = {
   id: string;
   name: string;
   description: string;
@@ -13,19 +13,19 @@ interface Product {
   stock: number;
   imageUrl: string;
   categoryId: string;
-}
+};
 
-interface Category {
+type Category = {
   id: string;
   name: string;
-}
+};
 
 function MahsulotlarPage() {
   const [mahsulot, setmahsulot] = useState<Product[]>([]);
   const [editMahsulot, setEditMahsulot] = useState<any>();
   const [open, setOpen] = useState<boolean>(false);
   const [category, setCategory] = useState<Category[]>([]);
-  
+
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(5);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -42,8 +42,6 @@ function MahsulotlarPage() {
       .then((res) => {
         setmahsulot(res.data.items);
         setTotalItems(res.data.total);
-        
-         
       })
       .catch((e) => {
         console.error("Xatolik", e);
@@ -55,12 +53,12 @@ function MahsulotlarPage() {
     api.get("api/categories?limit=10&page=1&order=ASC").then((res) => {
       setCategory(res.data.items);
     });
-  }, [page]); 
+  }, [page]);
 
   const Delet = (id: string) => {
     api.delete(`/api/products/${id}`).then(() => {
       setmahsulot((prev) => prev.filter((item) => item.id !== id));
-      setTotalItems((prev) => prev - 1); 
+      setTotalItems((prev) => prev - 1);
     });
   };
 
@@ -72,11 +70,7 @@ function MahsulotlarPage() {
 
   return (
     <div className="w-[1300px]">
-      <AddMahsulotlarPage
-        setOpen={setOpen}
-        open={open}
-        onRefresh={Mahsulot}
-      />
+      <AddMahsulotlarPage setOpen={setOpen} open={open} onRefresh={Mahsulot} />
       <EditMahsulot
         setEditMahsulot={setEditMahsulot}
         editMahsulot={editMahsulot}
@@ -85,7 +79,7 @@ function MahsulotlarPage() {
         bordered
         style={{ width: "100%" }}
         rowKey="id"
-        pagination={false} 
+        pagination={false}
         columns={[
           {
             title: "id",
@@ -151,45 +145,44 @@ function MahsulotlarPage() {
         dataSource={mahsulot}
       />
 
-<div className="flex justify-center mt-10">
-  <div className="pagination flex gap-2 items-center">
-    {page > 1 && (
-      <Button
-        type="primary"
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        onClick={() => changePage(page - 1)}
-      >
-        Back
-      </Button>
-    )}
+      <div className="flex justify-center mt-10">
+        <div className="pagination flex gap-2 items-center">
+          {page > 1 && (
+            <Button
+              type="primary"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={() => changePage(page - 1)}
+            >
+              Back
+            </Button>
+          )}
 
-    {[...Array(pages)].map((_, i) => (
-      <Button
-        key={i}
-        type="primary"
-        className={`px-4 py-2 rounded border ${
-          page === i + 1
-            ? "bg-blue-500 text-white"
-            : "bg-white text-blue-500 border-blue-500 hover:bg-blue-100"
-        }`}
-        onClick={() => changePage(i + 1)}
-      >
-        {i + 1}
-      </Button>
-    ))}
+          {[...Array(pages)].map((_, i) => (
+            <Button
+              key={i}
+              type="primary"
+              className={`px-4 py-2 rounded border ${
+                page === i + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-blue-500 border-blue-500 hover:bg-blue-100"
+              }`}
+              onClick={() => changePage(i + 1)}
+            >
+              {i + 1}
+            </Button>
+          ))}
 
-    {page < pages && (
-      <Button
-        type="primary"
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        onClick={() => changePage(page + 1)}
-      >
-        Next
-      </Button>
-    )}
-  </div>
-</div>
-
+          {page < pages && (
+            <Button
+              type="primary"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={() => changePage(page + 1)}
+            >
+              Next
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

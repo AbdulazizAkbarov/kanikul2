@@ -1,16 +1,11 @@
 import { Button, Drawer, Form, Input, Switch, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
+import { Banner } from "./Type/Type";
 
-interface Banner {
-  id: number;
-  title: string;
-  imageUrl: string;
-  isActive: boolean;
-  createdAt: string;
-}
 
-interface EditBannerProps {
+
+type EditBannerProps= {
   seteditBanner: React.Dispatch<React.SetStateAction<Banner | undefined>>;
   editBanner: Banner | undefined;
 }

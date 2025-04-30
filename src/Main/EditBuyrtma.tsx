@@ -3,16 +3,8 @@ import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import { Product, User } from "./Type/Type";
 
-interface Product {
-  id: number;
-  name: string;
-}
-
-interface User {
-  id: number;
-  name: string;
-}
 
 function EditBuyurtma({ buyurtmaState, setBuyurtmaState }: any) {
   const [form] = useForm();

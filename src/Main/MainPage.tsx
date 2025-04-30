@@ -15,8 +15,7 @@ function MainPage() {
         <Route path="/kategoria" element={<KategoriaPage />} />
         <Route path="/mijozlar" element={<Mijozlar />} />
         <Route path="/bannerlar" element={<Bannerlar />} />
-        <Route path="/buyurtmalar" element={<Buyurtmalar/>} />
-
+        <Route path="/buyurtmalar" element={<Buyurtmalar />} />
       </Routes>
     </div>
   );

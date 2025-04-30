@@ -2,15 +2,11 @@ import { Button, Drawer, Form, Input, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React from "react";
 import api from "./Axios";
+import { Category } from "./Type/Type";
 
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  createdAt?: string;
-}
 
-interface EditCategoryProps {
+
+type EditCategoryProps ={
   setEditCategory: React.Dispatch<React.SetStateAction<Category | undefined>>;
   editCategory: Category | undefined;
 }

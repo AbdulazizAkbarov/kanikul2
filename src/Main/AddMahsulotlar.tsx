@@ -2,19 +2,9 @@ import { Button, Drawer, Form, Input, message, Select, Upload } from "antd";
 import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
 import { useEffect, useState } from "react";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import { AddMahsulotlarPageProps, Category } from "./Type/Type";
 
 
-
-interface AddMahsulotlarPageProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  open: boolean;
-  onRefresh?: () => void;
-}
 
 function AddMahsulotlarPage({
   setOpen,

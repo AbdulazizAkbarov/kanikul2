@@ -3,30 +3,7 @@ import api from "./Axios";
 import { useState, useEffect } from "react";
 import AddBuyurtma from "./AddBuyurtma";
 import EditBuyurtma from "./EditBuyrtma";
-
-type Product = {
-  id: number;
-  name: string;
-};
-
-type User = {
-  id: number;
-  name: string;
-};
-
-type OrderItem = {
-  productId: number;
-  quantity: number;
-  price: number;
-};
-
-type Order = {
-  id: number;
-  customerId: number;
-  status: string;
-  totalPrice: number;
-  items: OrderItem[];
-};
+import { Order, Product, User } from "./Type/Type";
 
 function Buyurtma() {
   const [buyurtmaState, setBuyurtmaState] = useState<Order[]>([]);
@@ -78,8 +55,15 @@ function Buyurtma() {
 
   return (
     <div className="bg-gray-50 w-[1300px]">
-      <AddBuyurtma open={open} setOpen={setOpen} onRefresh={() => fetchOrders()} />
-      <EditBuyurtma buyurtmaState={selectedOrder} setBuyurtmaState={setBuyurtmaState} />
+      <AddBuyurtma
+        open={open}
+        setOpen={setOpen}
+        onRefresh={() => fetchOrders()}
+      />
+      <EditBuyurtma
+        buyurtmaState={selectedOrder}
+        setBuyurtmaState={setBuyurtmaState}
+      />
 
       <Table
         style={{
@@ -99,7 +83,9 @@ function Buyurtma() {
             dataIndex: "customerId",
             title: "Mijoz",
             render: (customerId) => {
-              const new_customer = userState.find((item) => item.id === customerId);
+              const new_customer = userState.find(
+                (item) => item.id === customerId
+              );
               return new_customer?.name;
             },
           },
@@ -113,7 +99,9 @@ function Buyurtma() {
             key: "totalPrice",
             dataIndex: "totalPrice",
             title: "Jami",
-            render: (totalPrice) => <p>{totalPrice.toLocaleString("ru")} so'm</p>,
+            render: (totalPrice) => (
+              <p>{totalPrice.toLocaleString("ru")} so'm</p>
+            ),
           },
           {
             key: "items",
@@ -122,7 +110,9 @@ function Buyurtma() {
             render: (items) => (
               <div>
                 {items?.map((item: any) => {
-                  const nomi = productState.find((productItem) => productItem.id === item.productId);
+                  const nomi = productState.find(
+                    (productItem) => productItem.id === item.productId
+                  );
                   return <div key={item.productId}>{nomi?.name}</div>;
                 })}
               </div>
@@ -154,7 +144,7 @@ function Buyurtma() {
         ]}
         dataSource={buyurtmaState}
         rowKey="id"
-        pagination={false} 
+        pagination={false}
       />
 
       <div className="flex justify-center mt-10">
@@ -169,20 +159,25 @@ function Buyurtma() {
             </Button>
           )}
 
-          {[...Array(pages)].map((_, i) => (
-            <Button
-              key={i}
-              type="primary"
-              className={`px-4 py-2 rounded border ${
-                page === i + 1
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-blue-500 border-blue-500 hover:bg-blue-100"
-              }`}
-              onClick={() => changePage(i + 1)}
-            >
-              {i + 1}
-            </Button>
-          ))}
+          {[...Array(pages)]
+            .map((_, i) => i + 1)
+            .filter(
+              (pageNumber) => Math.abs(pageNumber - page) <= 2
+            )
+            .map((pageNumber) => (
+              <Button
+                key={pageNumber}
+                type="primary"
+                className={`px-4 py-2 rounded border mx-1 ${
+                  page === pageNumber
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-blue-500 border-blue-500 hover:bg-blue-100"
+                }`}
+                onClick={() => changePage(pageNumber)}
+              >
+                {pageNumber}
+              </Button>
+            ))}
 
           {page < pages && (
             <Button

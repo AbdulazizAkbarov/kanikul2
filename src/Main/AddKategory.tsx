@@ -1,21 +1,11 @@
 import { Button, Drawer, Form, Input, message } from "antd";
 import { useForm } from "antd/es/form/Form";
-import React from "react";
 import api from "./Axios";
+import { AddCategoryProps, FormValues } from "./Type/Type";
 
-interface FormValues {
-  name: string;
-  description: string;
-  createdAt?: string; 
-}
-
-interface AddCategoryProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  open: boolean;
-  onRefresh?: () => void;
-}
 
 function AddCategory({ setOpen, open, onRefresh }: AddCategoryProps) {
+
   const [form] = useForm<FormValues>();
 
   const handleSubmit = (values: FormValues) => {
@@ -29,7 +19,7 @@ function AddCategory({ setOpen, open, onRefresh }: AddCategoryProps) {
         message.success("Mahsulot qo‘shildi!");
         form.resetFields();
         setOpen(false);
-        onRefresh?.(); 
+        onRefresh?.();
       })
       .catch((e) => {
         console.error("Xatolik", e);

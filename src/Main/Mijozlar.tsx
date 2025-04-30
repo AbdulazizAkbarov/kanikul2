@@ -4,14 +4,9 @@ import AddMijozlar from "./AddMijozlar";
 import api from "./Axios";
 import EditMijozlar from "./EditMijozlar";
 import { useEffect, useState } from "react";
+import { User } from "./Type/Type";
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  image: string;
-}
+
 
 function Mijozlar() {
   const [users, setUsers] = useState<User[]>([]);
@@ -157,7 +152,6 @@ function Mijozlar() {
           )}
         </div>
       </div>
-
     </div>
   );
 }

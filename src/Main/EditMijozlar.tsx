@@ -1,22 +1,12 @@
 import { Button, Drawer, Form, Input, Radio, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
+import { EditMijozlarProps, User } from "./Type/Type";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  image: string;
-  role: "admin" | "customer";
-}
 
-interface EditMijozlarProps {
-  selected?: User;
-  setSelected: (value: User | undefined) => void;
-}
 
-function EditMijozlar({ setSelected, selected }:EditMijozlarProps) {
+function EditMijozlar({ setSelected, selected }: EditMijozlarProps) {
+
   const [form] = useForm<User>();
 
   const handleSubmit = (values: User) => {
@@ -27,7 +17,7 @@ function EditMijozlar({ setSelected, selected }:EditMijozlarProps) {
       .then(() => {
         message.success("Foydalanuvchi yangilandi!");
         form.resetFields();
-        setSelected(undefined); 
+        setSelected(undefined);
       })
       .catch((e) => {
         console.error("Xatolik", e);

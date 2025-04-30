@@ -3,28 +3,8 @@ import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import { AddBuyurtmaProps, FormValues, Product, User } from "./Type/Type";
 
-interface User {
-  id: number;
-  name: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-}
-
-interface AddBuyurtmaProps {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onRefresh?: () => void;
-}
-
-interface FormValues {
-  customerId: number;
-  productId: number;
-  quantity: number;
-}
 
 
 function AddBuyurtma({ setOpen, open, onRefresh }:AddBuyurtmaProps) {

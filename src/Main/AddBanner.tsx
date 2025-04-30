@@ -1,24 +1,13 @@
 import { Button, Drawer, Form, Input, message, Switch, Upload } from "antd";
 import api from "./Axios";
 import { useForm } from "antd/es/form/Form";
+import { AddBannerProps, FormValues } from "./Type/Type";
 
-interface FormValues {
-  title: string;
-  imageUrl: string;
-  isActive: boolean;
-  createdAt: string; 
-}
-
-interface AddBannerProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  open: boolean;
-  onRefresh?: () => void;
-}
 
 function AddBanner({ setOpen, open, onRefresh }: AddBannerProps) {
   const [form] = useForm<FormValues>();
 
-  const handleSubmit = (values:any) => {
+  const handleSubmit = (values: any) => {
     api
       .post("/api/banners", {
         title: values.title,
@@ -30,7 +19,7 @@ function AddBanner({ setOpen, open, onRefresh }: AddBannerProps) {
         message.success("Foydalanuvchi qo‘shildi!");
         form.resetFields();
         setOpen(false);
-        onRefresh?.(); 
+        onRefresh?.();
       })
       .catch((e) => {
         console.error("Xatolik", e);
@@ -63,8 +52,10 @@ function AddBanner({ setOpen, open, onRefresh }: AddBannerProps) {
           </Form.Item>
 
           <Form.Item label="Rasm URL" name="imageUrl">
-            <Upload name="file"
-            action={"https://nt.softly.uz/api/files/upload"}>
+            <Upload
+              name="file"
+              action={"https://nt.softly.uz/api/files/upload"}
+            >
               <Button>Click to Upload</Button>
             </Upload>
           </Form.Item>

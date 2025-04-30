@@ -3,30 +3,9 @@ import api from "./Axios";
 import { useState, useEffect } from "react";
 import AddBuyurtma from "./AddBuyurtma";
 import EditBuyurtma from "./EditBuyrtma";
+import { Order, Product, User } from "./Type/Type";
 
-type Product = {
-  id: number;
-  name: string;
-};
 
-type User = {
-  id: number;
-  name: string;
-};
-
-type OrderItem = {
-  productId: number;
-  quantity: number;
-  price: number;
-};
-
-type Order = {
-  id: number;
-  customerId: number;
-  status: string;
-  totalPrice: number;
-  items: OrderItem[];
-};
 
 function Buyurtma() {
   const [buyurtmaState, setBuyurtmaState] = useState<Order[]>([]);

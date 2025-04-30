@@ -1,30 +1,13 @@
 import { Button, Drawer, Form, Input, message, Radio, Upload } from "antd";
-import { useForm } from "antd/es/form/Form";
 import api from "./Axios";
-
-interface AddMijozlarProps {
-  open: boolean;
-  setOpen: (value: boolean) => void;
-  onRefresh: () => void;
-}
-
-interface FormValues {
-  name: string;
-  email: string;
-  password: string;
-  image: string;
-  role: "admin" | "customer";
-}
+import { AddMijozlarProps } from "./Type/Type";
 
 function AddMijozlar({ setOpen, open, onRefresh }: AddMijozlarProps) {
-  const [form] = useForm<FormValues>();
-
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = ({ values }: any) => {
     api
       .post("/api/users", values)
       .then(() => {
         message.success("Foydalanuvchi qo‘shildi!");
-        form.resetFields();
         setOpen(false);
         onRefresh?.();
       })
@@ -45,36 +28,20 @@ function AddMijozlar({ setOpen, open, onRefresh }: AddMijozlarProps) {
       </Button>
 
       <Drawer open={open} onClose={() => setOpen(false)} destroyOnClose>
-        <Form<FormValues> form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            label="Ism"
-            name="name"
-            rules={[{ required: true, message: "Ismni kiriting" }]}
-          >
+        <Form layout="vertical" onFinish={handleSubmit}>
+          <Form.Item label="Ism" name="name">
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Email kiriting" }]}
-          >
+          <Form.Item label="Email" name="email">
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="Parol"
-            name="password"
-            rules={[{ required: true, message: "Parolni kiriting" }]}
-          >
+          <Form.Item label="Parol" name="password">
             <Input.Password />
           </Form.Item>
 
-          <Form.Item
-            name="role"
-            label="Rol"
-            rules={[{ required: true, message: "Rolni tanlang" }]}
-          >
+          <Form.Item name="role" label="Rol">
             <Radio.Group
               options={[
                 { label: "Mijoz", value: "customer" },
@@ -86,8 +53,10 @@ function AddMijozlar({ setOpen, open, onRefresh }: AddMijozlarProps) {
           </Form.Item>
 
           <Form.Item label="Rasm URL" name="image">
-            <Upload name="file"
-            action={"https://nt.softly.uz/api/files/upload"}>
+            <Upload
+              name="file"
+              action={"https://nt.softly.uz/api/files/upload"}
+            >
               <Button>Click to Upload</Button>
             </Upload>
           </Form.Item>
